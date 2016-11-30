@@ -4,8 +4,9 @@
 
 var PouchDB = require('pouchdb'),
     Q = require('q'),
-    numberOfDocuments = 10000,
-    localDb;
+    numberOfDocuments = 5000,
+    localDb,
+    queryTime;
 
 function callWithLog(fn, message) {
     console.log(message + ' ' + (new Date().toLocaleTimeString()));
@@ -54,10 +55,13 @@ function addView () {
 }
 
 function queryDb () {
+    var startTime = new Date();
     return localDb.query('testdoc', {
         limit: 100,
         include_docs: true
     }).then(function (result) {
+        var endTime = new Date();
+        queryTime = (endTime.getTime() - startTime.getTime()) / 1000;
         console.log('Got result with ' + result.rows.length + ' rows');
     }).catch(function (err) {
         console.log('Got error ' + err);
@@ -78,3 +82,6 @@ callWithLog(createDatabase, 'Create database')
     .then(function () {
         return callWithLog(destroyDatabase, 'Destroy db');
     })
+    .then(function () {
+        console.log('Executed query in ' + queryTime + 's');
+    });
