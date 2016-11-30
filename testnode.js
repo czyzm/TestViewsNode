@@ -4,7 +4,7 @@
 
 var PouchDB = require('pouchdb'),
     Q = require('q'),
-    numberOfDocuments = 5000,
+    numberOfDocuments = 6000,
     localDb,
     queryTime;
 
@@ -84,4 +84,10 @@ callWithLog(createDatabase, 'Create database')
     })
     .then(function () {
         console.log('Executed query in ' + queryTime + 's');
+    })
+    .catch(function (error) {
+        console.log('Got error: ' + error);
+        if (localDb) {
+            localDb.destroy();
+        }
     });
