@@ -4,7 +4,7 @@
 
 var PouchDB = require('pouchdb'),
     Q = require('q'),
-    numberOfDocuments = 6000,
+    numberOfDocuments = 2000,
     localDb,
     queryTime;
 
