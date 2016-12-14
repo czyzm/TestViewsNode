@@ -4,7 +4,7 @@
 
 var PouchDB = require('pouchdb'),
     Q = require('q'),
-    numberOfDocuments = 6000,
+    numberOfDocuments = 15000,
     localDb,
     queryTime,
     useDbFind = process.argv[2];
@@ -98,13 +98,13 @@ function findInDb () {
 
 callWithLog(createDatabase, 'Create database')
     .then(function () {
-        return callWithLog(addData, 'Add data');
-    })
-    .then(function () {
         if (useDbFind) {
             return callWithLog(addIndex, 'Add index');
         }
         return callWithLog(addView, 'Add view');
+    })
+    .then(function () {
+        return callWithLog(addData, 'Add data');
     })
     .then(function () {
         if (useDbFind) {
