@@ -5,4 +5,6 @@ Test PouchDB views using node
 `npm install`
 
 ## Run the test
-`node testnode.js`
+Test with view and db.query: `node testnode.js`
+
+Test with index using pouchdb-find: `node testnode.js --find`

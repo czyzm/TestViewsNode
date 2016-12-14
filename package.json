@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "pouchdb": "6.0.5",
+    "pouchdb-find": "0.10.4",
     "q": "1.4.1"
   }
 }

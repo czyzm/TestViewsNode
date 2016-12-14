@@ -4,9 +4,14 @@
 
 var PouchDB = require('pouchdb'),
     Q = require('q'),
-    numberOfDocuments = 2000,
+    numberOfDocuments = 6000,
     localDb,
-    queryTime;
+    queryTime,
+    useDbFind = process.argv[2];
+
+if (useDbFind === '--find') {
+    PouchDB.plugin(require('pouchdb-find'));
+}
 
 function callWithLog(fn, message) {
     console.log(message + ' ' + (new Date().toLocaleTimeString()));
@@ -54,6 +59,14 @@ function addView () {
     return localDb.put(ddoc);
 }
 
+function addIndex () {
+    return localDb.createIndex({
+        index: {
+            fields: ['title']
+        }
+    });
+}
+
 function queryDb () {
     var startTime = new Date();
     return localDb.query('testdoc', {
@@ -68,15 +81,35 @@ function queryDb () {
     });
 }
 
+function findInDb () {
+    var startTime = new Date();
+    return localDb.find({
+        selector: {title: {$lte: 'TestTitle99999'}},
+        limit: 100
+    }).then(function (result) {
+        var endTime = new Date();
+        queryTime = (endTime.getTime() - startTime.getTime()) / 1000;
+        console.log('Got result with ' + result.docs.length + ' rows');
+    }).catch(function (err) {
+        console.log('Got error ' + err);
+    });
+}
+
 
 callWithLog(createDatabase, 'Create database')
     .then(function () {
         return callWithLog(addData, 'Add data');
     })
     .then(function () {
+        if (useDbFind) {
+            return callWithLog(addIndex, 'Add index');
+        }
         return callWithLog(addView, 'Add view');
     })
     .then(function () {
+        if (useDbFind) {
+            return callWithLog(findInDb, 'Find in DB');
+        }
         return callWithLog(queryDb, 'Query view');
     })
     .then(function () {
